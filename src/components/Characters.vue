@@ -24,6 +24,22 @@
         :items-per-page="5"
         :mobile-breakpoint="0"
       >
+      <template
+        v-slot:item.name="{ item }"
+      >
+        <div style="position: relative;">
+          <v-avatar
+            v-if="item.avatar"
+            size="35"
+            style="position: absolute; left: 0; top: -5px;"
+          >
+            <img :src="item.avatar" />
+          </v-avatar>
+          <span style="margin-left: 50px;">
+            {{ item.name }}
+          </span>
+        </div>
+      </template>
     </v-data-table>
   </div>
 </template>

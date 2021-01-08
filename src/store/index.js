@@ -9,6 +9,7 @@ const charactersQuery = gql`
       id
       name
       description
+      avatar
     }
   }
 `;
