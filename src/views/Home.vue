@@ -1,7 +1,10 @@
 <template>
   <div class="home">
     <img alt="Vue logo" src="../assets/logo.png" />
-    {{ characters }}
+    <characters
+      v-if="characters"
+     :characters="characters"
+     ></characters>
     <div>
       <v-text-field
         label="Name"
@@ -20,12 +23,12 @@
 <script>
 import { mapActions } from "vuex";
 // @ is an alias to /src
-// import HelloWorld from "@/components/HelloWorld.vue";
+import Characters from "@/components/Characters.vue";
 
 export default {
   name: "Home",
   components: {
-    // HelloWorld
+    Characters
   },
   data() {
     return {
