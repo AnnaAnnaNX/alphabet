@@ -1,14 +1,28 @@
 <template>
   <div>
-    <v-text-field
-        label="Search"
+    <div style="position: relative;">
+      <v-text-field
+        placeholder="Search"
         v-model="search"
-      ></v-text-field>
+        style="padding-right: 66px;"
+      >
+        <template v-slot:prepend>
+          <v-icon>
+            mdi-magnify
+          </v-icon>
+        </template>
+      </v-text-field>
+      <div style="position: absolute; right: 0; top: 0;">
+        <slot></slot>
+      </div>
+    </div>
     <v-data-table
         :headers="headers"
         :items="characters"
         class="elevation-1"
         :search="search"
+        items-per-page="5"
+        :mobile-breakpoint="0"
       >
     </v-data-table>
   </div>
@@ -30,7 +44,7 @@ export default {
           value: 'id',
         },
         {
-          text: 'Name',
+          text: 'Character',
           align: 'start',
           value: 'name',
         },
@@ -43,3 +57,6 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+</style>

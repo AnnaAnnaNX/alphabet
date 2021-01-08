@@ -1,21 +1,41 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png" />
+  <div class="pa-sm-10">
+    <div class="display-1 text-center mt-3">
+      List characters
+    </div>
+    <!-- <img alt="Vue logo" src="../assets/logo.png" /> -->
     <characters
       v-if="characters"
      :characters="characters"
-     ></characters>
-    <div>
-      <v-text-field
-        label="Name"
-        v-model="name"
-      ></v-text-field>
-      <v-text-field
-        label="Description"
-        v-model="description"
-      ></v-text-field>
-      <v-btn @click="addNewCharacter">Add new character</v-btn>
-    </div>
+     >
+      <v-dialog
+        v-model="dialog"
+        hide-overlay
+        transition="dialog-bottom-transition"
+      >
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+            color="primary"
+            fab
+            medium
+            dark
+            v-bind="attrs"
+            v-on="on"
+          >
+            <v-icon>mdi-plus</v-icon>
+          </v-btn>
+        </template>
+        <v-card>
+          <form-add-character
+            v-if="dialog"
+            v-on:close-modal="closeModal"
+          ></form-add-character>
+        </v-card>
+      </v-dialog>
+     </characters>
+
+    
+
     <!-- <HelloWorld msg="Welcome to Your Vue.js App" /> -->
   </div>
 </template>
@@ -24,16 +44,17 @@
 import { mapActions } from "vuex";
 // @ is an alias to /src
 import Characters from "@/components/Characters.vue";
+import FormAddCharacter from '../components/FormAddCharacter.vue';
 
 export default {
   name: "Home",
   components: {
-    Characters
+    Characters,
+    FormAddCharacter
   },
   data() {
     return {
-      name: null,
-      description: null,
+      dialog: false,
     };
   },
   computed: {
@@ -43,15 +64,8 @@ export default {
   },
   methods: {
     ...mapActions(["fetchCharacters", "addCharacter"]),
-    addNewCharacter() {
-      this.addCharacter({ 
-        name: this.name,
-        description: this.description,
-      })
-      .then(() => {
-        this.name = null;
-        this.description = null;
-      });
+    closeModal() {
+      this.dialog = false;
     },
   },
   mounted() {
