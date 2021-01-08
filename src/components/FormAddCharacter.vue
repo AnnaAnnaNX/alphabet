@@ -14,6 +14,16 @@
         v-model="description"
         :rules="rules"
       ></v-text-field>
+      <v-file-input
+        id="input-avatar"
+        show-size
+        accept="image/*"
+        :rules="rulesFile"
+        placeholder="add avatar"
+      ></v-file-input>
+    </v-card-text>
+    <v-card-actions>
+      <v-spacer></v-spacer>
       <v-btn
         color="blue"
         text
@@ -24,7 +34,7 @@
         text
         @click="addNewCharacter"
       >Add new character</v-btn>
-    </v-card-text>
+    </v-card-actions>
   </v-card>
 </template>
 
@@ -39,11 +49,30 @@ export default {
     return {
       name: null,
       description: null,
+      avatar: null,
       rules: [
-        value => (!!value || !!value.trim()) || 'required',
-        value => ((value.trim() || '').length >= 5) || 'Min 5 significant characters',
-        value => ((value.trim() || '').length <= 100) || 'Max 100 characters',
+        value => (!value || !!value.trim()) || 'required',
+        value => ((!value || value.trim() || '').length >= 5) || 'Min 5 significant characters',
+        value => ((!value || value.trim() || '').length <= 100) || 'Max 100 characters',
       ],
+      rulesFile: [
+         value => !!value || 'required',
+      ],
+    };
+  },
+  mounted() {
+    const that = this;
+    const input = document.querySelector('#input-avatar');
+    input.onchange = function () {
+      const file = input.files[0],
+        reader = new FileReader();
+
+      reader.onloadend = function () {
+        that.avatar =  reader.result;
+        // console.log(reader.result);
+      };
+
+      reader.readAsDataURL(file);
     };
   },
   methods: {
@@ -53,6 +82,7 @@ export default {
         this.addCharacter({ 
           name: this.name,
           description: this.description,
+          avatar: this.avatar,
         })
         .then(() => {
           this.$emit('close-modal');

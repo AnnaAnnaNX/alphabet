@@ -21,7 +21,7 @@
         :items="characters"
         class="elevation-1"
         :search="search"
-        items-per-page="5"
+        :items-per-page="5"
         :mobile-breakpoint="0"
       >
     </v-data-table>

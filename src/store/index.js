@@ -14,14 +14,17 @@ const charactersQuery = gql`
 `;
 
 const characterMutation = gql`
-  mutation insert_character($name: String!, $description: String!) {
-    insert_character(objects: [{name: $name, description: $description}]) {
+  mutation insert_character($name: String!, $description: String!, $avatar: String!) {
+    insert_character(objects: [{name: $name, description: $description, avatar: $avatar}]) {
       affected_rows
-        returning {
-          id
-          name
-          description
-        }
+      returning {
+        id
+        name
+        description
+        avatar
+        __typename
+      }
+      __typename
     }
   }
 `;
@@ -128,6 +131,7 @@ const actions = {
     const { data } = await apolloClient.mutate({mutation: characterMutation, variables: {
       name: character.name,
       description: character.description,
+      avatar: character.avatar,
     }})
     console.log(data)
     if (data.insert_character.affected_rows) {
