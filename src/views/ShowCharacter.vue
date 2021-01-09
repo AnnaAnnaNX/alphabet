@@ -20,7 +20,7 @@
         fab
         medium
         dark
-        v-for="symbol in [...symbols, ...symbols,...symbols, ...symbols]"
+        v-for="symbol in symbols"
         :key="symbol"
         class="display-1 mx-5 my-5"
       >
