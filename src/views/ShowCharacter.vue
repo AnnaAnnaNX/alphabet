@@ -15,16 +15,24 @@
       </span>
     </div>
     <v-card-text>
+      {{ symbols }}
     </v-card-text>
   </div>
 </template>
 
 <script>
 import { mapActions } from "vuex";
+import { russianAlphabet, englishAlphabet } from "../constants.js";
 
 export default {
   name: "ShowCharacter",
   components: {
+  },
+  data() {
+    return {
+      russianAlphabet,
+      englishAlphabet
+    };
   },
   computed: {
     id() {
@@ -40,10 +48,28 @@ export default {
     character() {
       return this.$store.state.character;
     },
-  },
-  data() {
-    return {
-    };
+    audioObj() {
+      if (!this.character) {
+        return null;
+      }
+      const audios = this.character.audios;
+      if (!audios) {
+        return null;
+      }
+      const obj = {};
+      audios.forEach((audio) => {
+        if (audio.symbol)
+        obj[audio.symbol] = audio;
+      });
+      return obj;
+    },
+    symbols() {
+      if (!this.audioObj) {
+        return null;
+      }
+      const arr = Object.keys(this.audioObj);
+      return arr.sort();
+    },
   },
   methods: {
     ...mapActions(["fetchCharacterWithAudio"]),
