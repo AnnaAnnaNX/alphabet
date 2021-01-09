@@ -2,7 +2,12 @@
   <v-app>
     <v-app-bar app color="primary" dark>
       <div class="d-flex align-center">
-        <v-img
+        <router-link to="/">
+          <v-icon>
+            mdi-alphabetical-variant
+          </v-icon>
+        </router-link>
+        <!-- <v-img
           alt="Vuetify Logo"
           class="shrink mr-2"
           contain
@@ -18,22 +23,30 @@
           min-width="100"
           src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
           width="100"
-        />
+        /> -->
       </div>
-
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-
+      
       <v-spacer></v-spacer>
 
-      <v-btn
+      <router-link to="/">
+        <span class="link mx-3" style="color: #fff;">
+          Characters
+        </span>
+      </router-link>
+      <router-link to="/about">
+        <span class="link mx-3" style="color: #fff;">
+          About
+        </span>
+      </router-link>
+
+      <!-- <v-btn
         href="https://github.com/vuetifyjs/vuetify/releases/latest"
         target="_blank"
         text
       >
         <span class="mr-2">Latest Release</span>
         <v-icon>mdi-open-in-new</v-icon>
-      </v-btn>
+      </v-btn> -->
     </v-app-bar>
 
     <v-main>
@@ -55,3 +68,9 @@ export default {
   })
 };
 </script>
+
+<style scoped>
+.link {
+  font-size: 20px !important;
+}
+</style>
