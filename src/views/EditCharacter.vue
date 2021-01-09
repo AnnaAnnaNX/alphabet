@@ -1,66 +1,41 @@
 <template>
   <div class="pa-sm-10">
-    <router-link
-      v-if="character"
-      class="title"
-      :to="`/character/${id}`"
-    >
+    <div class="title">
       <span
         class="display-1 text-center mt-3 orange--text"
       >
         Edit
       </span>
-      <v-avatar
-        v-if="character.avatar"
-        :size="50"
+      <router-link
+        v-if="character"
+        :to="`/character/${id}`"
       >
-        <img :src="character.avatar" alt="avatar" />
-      </v-avatar>
-      <span class="display-1 text-center mt-3">
-        {{ character.name }}
-      </span>
-    </router-link>
-    <v-tabs
-      v-model="tab"
-      centered
-    >
-      <v-tab>Sourcies</v-tab>
-      <v-tab>Diapasons</v-tab>
-    </v-tabs>
-    <v-tabs-items v-model="tab">
-      <v-tab-item>
-        1
-        {{ fileNameWithAudioArray }}
-        <!-- <sourcies
-          :sourcies="fileNameWithAudioArray"
-        ></sourcies> -->
-      </v-tab-item>
-      <v-tab-item>
-        2
-      </v-tab-item>
-    </v-tabs-items>
-    <!-- <div class="wrap-symbols">
-      <v-btn
-        color="primary"
-        fab
-        medium
-        dark
-        v-for="symbol in symbols"
-        :key="symbol"
-        class="display-1 mx-5 my-5"
-      >
-        {{ symbol.toUpperCase() }}
-      </v-btn>
-    </div> -->
+        <v-avatar
+          v-if="character.avatar"
+          :size="50"
+        >
+          <img :src="character.avatar" alt="avatar" />
+        </v-avatar>
+        <span class="display-1 text-center mt-3">
+          {{ character.name }}
+        </span>
+      </router-link>
+    </div>
+    <diapasons-table
+      v-if="character"
+      :audios="character.audios"
+    ></diapasons-table>
   </div>
 </template>
 
 <script>
 import { mapActions } from "vuex";
+import DiapasonsTable from "../components/tables/DiapasonsTable.vue";
 
 export default {
   name: "EditCharacter",
   components: {
+    DiapasonsTable
   },
   computed: {
     id() {
@@ -132,7 +107,6 @@ export default {
   },
   data() {
     return {
-      tab: null,
     };
   },
   methods: {
