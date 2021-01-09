@@ -47,7 +47,7 @@ import Characters from "@/components/Characters.vue";
 import FormAddCharacter from '../components/FormAddCharacter.vue';
 
 export default {
-  name: "Home",
+  name: "CharactersList",
   components: {
     Characters,
     FormAddCharacter
