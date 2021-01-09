@@ -27,7 +27,7 @@
       <template
         v-slot:item.name="{ item }"
       >
-        <div style="position: relative;">
+        <router-link :to="`/character/${item.id}`" style="position: relative;">
           <v-avatar
             v-if="item.avatar"
             size="35"
@@ -38,7 +38,7 @@
           <span style="margin-left: 50px;">
             {{ item.name }}
           </span>
-        </div>
+        </router-link>
       </template>
     </v-data-table>
   </div>

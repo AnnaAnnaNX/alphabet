@@ -18,6 +18,12 @@ const routes = [
       import("../views/EditCharacter.vue")
   },
   {
+    path: "/sourcies",
+    name: "Sourcies",
+    component: () =>
+      import("../views/Sourcies.vue")
+  },
+  {
     path: "/character/:id",
     name: "ShowCharacter",
     component: () =>

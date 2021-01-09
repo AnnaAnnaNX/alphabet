@@ -1,8 +1,9 @@
 <template>
   <div class="pa-sm-10">
-    <div
+    <router-link
       v-if="character"
       class="title"
+      :to="`/character/${id}`"
     >
       <span
         class="display-1 text-center mt-3 orange--text"
@@ -18,7 +19,7 @@
       <span class="display-1 text-center mt-3">
         {{ character.name }}
       </span>
-    </div>
+    </router-link>
     <v-tabs
       v-model="tab"
       centered
@@ -29,12 +30,16 @@
     <v-tabs-items v-model="tab">
       <v-tab-item>
         1
+        {{ fileNameWithAudioArray }}
+        <!-- <sourcies
+          :sourcies="fileNameWithAudioArray"
+        ></sourcies> -->
       </v-tab-item>
       <v-tab-item>
         2
       </v-tab-item>
     </v-tabs-items>
-    <div class="wrap-symbols">
+    <!-- <div class="wrap-symbols">
       <v-btn
         color="primary"
         fab
@@ -46,7 +51,7 @@
       >
         {{ symbol.toUpperCase() }}
       </v-btn>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -71,7 +76,7 @@ export default {
     character() {
       return this.$store.state.character;
     },
-    audioObj() {
+    symbolWithAudioObj() {
       if (!this.character) {
         return null;
       }
@@ -81,16 +86,47 @@ export default {
       }
       const obj = {};
       audios.forEach((audio) => {
-        if (audio.symbol)
-        obj[audio.symbol] = audio;
+        if (audio.symbol) {
+          obj[audio.symbol] = audio;
+        }
       });
       return obj;
     },
-    symbols() {
-      if (!this.audioObj) {
+    fileNameWithAudioObj() {
+      if (!this.character) {
         return null;
       }
-      const arr = Object.keys(this.audioObj);
+      const audios = this.character.audios;
+      if (!audios) {
+        return null;
+      }
+      const obj = {};
+      audios.forEach((audio) => {
+        if (!audio.fileName) return;
+        if (obj[audio.fileName]) {
+          obj[audio.fileName].push(audio.symbol);
+        } else {
+          obj[audio.fileName] = [audio.symbol];
+        }
+      });
+      return obj;
+    },
+    fileNameWithAudioArray() {
+      if (!this.fileNameWithAudioObj) {
+        return null;
+      }
+      return Object.keys(this.fileNameWithAudioObj).map((fileName) => {
+        return {
+          fileName,
+          symbols: this.fileNameWithAudioObj[fileName]
+        }
+      });
+    },
+    symbols() {
+      if (!this.symbolWithAudioObj) {
+        return null;
+      }
+      const arr = Object.keys(this.symbolWithAudioObj);
       return arr.sort();
     },
   },

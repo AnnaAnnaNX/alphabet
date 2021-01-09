@@ -33,6 +33,11 @@
           Characters
         </span>
       </router-link>
+      <router-link to="/sourcies">
+        <span class="link mx-3" style="color: #fff;">
+          Sourcies
+        </span>
+      </router-link>
       <router-link to="/about">
         <span class="link mx-3" style="color: #fff;">
           About

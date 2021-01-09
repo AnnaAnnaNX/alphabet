@@ -1,8 +1,9 @@
 <template>
   <div class="pa-sm-10">
-    <div
+    <router-link
       v-if="character"
       class="title"
+      :to="`/character/${id}`"
     >
       <v-avatar
         v-if="character.avatar"
@@ -13,7 +14,7 @@
       <span class="display-1 text-center mt-3">
         {{ character.name }}
       </span>
-    </div>
+    </router-link>
     <div class="wrap-symbols">
       <v-btn
         color="primary"
@@ -27,6 +28,18 @@
         {{ symbol.toUpperCase() }}
       </v-btn>
     </div>
+    <v-btn
+        color="primary"
+        fab
+        medium
+        dark
+        class="display-1 mx-5 my-5"
+        :to="`/character/${id}/edit`"
+      >
+        <v-icon>
+          mdi-pencil
+        </v-icon>
+      </v-btn>
   </div>
 </template>
 

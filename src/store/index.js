@@ -46,7 +46,38 @@ const characterWithAudioQuery = gql`
       }
     }
   }
-  `;
+`;
+
+// const sourciesByCharacterIdQuery = gql`
+//   query MyQuery ($character_id: Int!){
+//     sourcies {
+//       id
+//       filename
+//       audios (where: {character_id: {_eq: $character_id}}){
+//         id
+//         character_id
+//         begin
+//         end
+//       }
+//     }
+//   }
+// `;
+
+const sourciesQuery = gql`
+  query MyQuery {
+    sourcies {
+      id
+      filename
+      audios {
+        character {
+          id
+          name
+          avatar
+        }
+      }
+    }
+  }
+`;
 
 
 
@@ -116,6 +147,7 @@ const state = {
   todos: [],
   characters: null,
   character: null,
+  sourcies: null,
 }
 
 const mutations = {
@@ -127,6 +159,9 @@ const mutations = {
   },
   fetchCharacterWithAudio (state, character) {
     state.character = character && character[0];
+  },
+  fetchSourcies (state, sourcies) {
+    state.sourcies = sourcies;
   },
 
 
@@ -167,6 +202,10 @@ const actions = {
     }})
     console.log(data);
     commit('fetchCharacterWithAudio', data.character)
+  },
+  async fetchSourcies ({ commit }) {
+    const { data } = await apolloClient.query({query: sourciesQuery})
+    commit('fetchSourcies', data.sourcies)
   },
 
 
