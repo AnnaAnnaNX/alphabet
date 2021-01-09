@@ -30,6 +30,24 @@ const characterMutation = gql`
   }
 `;
 
+const characterWithAudioQuery = gql`
+  query MyQuery ($id: Int!) {
+    character(where: {id: {_eq: $id}}) {
+      id
+      name
+      description
+      avatar
+      audios {
+        id
+        symbol
+        fileName
+        begin
+        end
+      }
+    }
+  }
+  `;
+
 
 
 
@@ -97,6 +115,7 @@ const state = {
   // todos: JSON.parse(window.localStorage.getItem(STORAGE_KEY) || '[]')
   todos: [],
   characters: null,
+  character: null,
 }
 
 const mutations = {
@@ -138,6 +157,13 @@ const actions = {
     if (data.insert_character.affected_rows) {
       commit('addCharacter', data.insert_character.returning[0])
     }
+  },
+  async fetchCharacterWithAudio ({ commit }, characterId) {
+    const { data } = await apolloClient.query({query: characterWithAudioQuery, variables: {
+      id: characterId
+    }})
+    console.log(data);
+    commit('fetchCharacters', data.character)
   },
 
 
