@@ -14,9 +14,19 @@
         {{ character.name }}
       </span>
     </div>
-    <v-card-text>
-      {{ symbols }}
-    </v-card-text>
+    <div class="wrap-symbols">
+      <v-btn
+        color="primary"
+        fab
+        medium
+        dark
+        v-for="symbol in [...symbols, ...symbols,...symbols, ...symbols]"
+        :key="symbol"
+        class="display-1 mx-5 my-5"
+      >
+        {{ symbol.toUpperCase() }}
+      </v-btn>
+    </div>
   </div>
 </template>
 
@@ -83,5 +93,10 @@ export default {
   justify-content: space-evenly;
   height: 100px;
   align-items: center;
+}
+.wrap-symbols {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
 }
 </style>
