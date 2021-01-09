@@ -125,6 +125,9 @@ const mutations = {
   addCharacter (state, character) {
     state.characters.unshift(character)
   },
+  fetchCharacterWithAudio (state, character) {
+    state.character = character && character[0];
+  },
 
 
   fetchTodos (state, todos) {
@@ -163,7 +166,7 @@ const actions = {
       id: characterId
     }})
     console.log(data);
-    commit('fetchCharacters', data.character)
+    commit('fetchCharacterWithAudio', data.character)
   },
 
 
