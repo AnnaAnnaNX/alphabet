@@ -46,9 +46,11 @@
         <v-col>
           <v-btn
             icon
+            @click="isPlay ? stop() : play()"            
+            :disabled="!duration"
           >
             <v-icon>
-              mdi-play
+              {{  isPlay ? 'mdi-pause' : 'mdi-play' }}
             </v-icon>
           </v-btn>
         </v-col>
@@ -85,6 +87,7 @@ export default {
       diapason: [0, 10],
       audioElement: null,
       duration: null,
+      isPlay: null,
     };
   },
   computed: {
@@ -95,21 +98,51 @@ export default {
       ];
     },
   },
+  beforeDestroy() {
+    this.stop();
+  },
   methods: {
     ...mapActions(["addCharacter"]),
     close() {
       this.$emit('close-modal');
     },
     getDuration() {
-      console.log('getDuration');
       this.duration = null;
       if (!this.source || !this.source.link) {
         return;
       }
+      this.stop();    
       this.audioElement = new Audio(this.source.link);
       this.audioElement.onloadedmetadata = () => {
         this.duration = parseInt(this.audioElement.duration);
       };
+    },
+    play() {
+      if (!this.source || !this.source.link) {
+        return;
+      }
+      if (!this.audioElement) {
+        this.audioElement = new Audio(`${this.source.link}#t=${this.diapason[0]},${this.diapason[1]}`);
+        this.audioElement.onloadedmetadata = () => {
+          this.audioElement.play();
+          this.isPlay = true;
+        };
+      } else {
+        this.audioElement.pause();
+        this.audioElement.currentTime = 0;
+        this.audioElement = new Audio(`${this.source.link}#t=${this.diapason[0]},${this.diapason[1]}`);
+        this.audioElement.onloadedmetadata = () => {
+          this.audioElement.play();
+          this.isPlay = true;
+        };
+      }
+    },
+    stop() {
+      if (this.audioElement) {
+        this.audioElement.pause();
+        this.audioElement.currentTime = 0;
+        this.isPlay = false;
+      }
     },
   },
 };
