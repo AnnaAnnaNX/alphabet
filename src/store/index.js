@@ -30,7 +30,88 @@ const characterMutation = gql`
   }
 `;
 
+const characterWithAudioQuery = gql`
+  query MyQuery ($id: Int!) {
+    character(where: {id: {_eq: $id}}) {
+      id
+      name
+      description
+      avatar
+      audios {
+        id
+        symbol
+        begin
+        end
+        sourcy {
+          link
+        }
+      }
+    }
+  }
+`;
 
+// const sourciesByCharacterIdQuery = gql`
+//   query MyQuery ($character_id: Int!){
+//     sourcies {
+//       id
+//       filename
+//       audios (where: {character_id: {_eq: $character_id}}){
+//         id
+//         character_id
+//         begin
+//         end
+//       }
+//     }
+//   }
+// `;
+
+const sourciesQuery = gql`
+  query MyQuery {
+    sourcies {
+      id
+      filename
+      link
+      audios {
+        character {
+          id
+          name
+          avatar
+        }
+      }
+    }
+  }
+`;
+
+const diapasonMutation = gql`
+  mutation insert_audio ($character_id: Int!, $sourcies_id: Int!, $symbol: String!, $begin: numeric!, $end: numeric!) {
+    insert_audio(objects: [{character_id: $character_id, sourcies_id: $sourcies_id, symbol: $symbol, begin: $begin, end: $end }]) {
+      affected_rows
+      returning {
+      id
+      character_id
+      sourcies_id
+      symbol
+      begin
+      end
+      __typename
+      }
+      __typename
+    }
+  }
+`;
+
+const sourceMutation = gql`
+  mutation insert_sourcies ($filename: String!, $link: String!) {
+    insert_sourcies(objects: [{filename: $filename, link: $link}]) {
+      affected_rows
+      returning {
+      id
+      filename
+      link
+      }
+    }
+  }
+`;
 
 
 
@@ -97,6 +178,8 @@ const state = {
   // todos: JSON.parse(window.localStorage.getItem(STORAGE_KEY) || '[]')
   todos: [],
   characters: null,
+  character: null,
+  sourcies: null,
 }
 
 const mutations = {
@@ -105,6 +188,21 @@ const mutations = {
   },
   addCharacter (state, character) {
     state.characters.unshift(character)
+  },
+  fetchCharacterWithAudio (state, character) {
+    state.character = character && character[0];
+  },
+  fetchSourcies (state, sourcies) {
+    state.sourcies = sourcies;
+  },
+  addDiapason (state, diapason) {
+    if (state.character
+      && state.character.audios) {
+        state.character.audios.unshift(diapason);
+    }
+  },
+  addSource (state, source) {
+    state.sourcies.unshift(source);
   },
 
 
@@ -137,6 +235,40 @@ const actions = {
     console.log(data)
     if (data.insert_character.affected_rows) {
       commit('addCharacter', data.insert_character.returning[0])
+    }
+  },
+  async fetchCharacterWithAudio ({ commit }, characterId) {
+    const { data } = await apolloClient.query({query: characterWithAudioQuery, variables: {
+      id: characterId
+    }})
+    console.log(data);
+    commit('fetchCharacterWithAudio', data.character)
+  },
+  async fetchSourcies ({ commit }) {
+    const { data } = await apolloClient.query({query: sourciesQuery})
+    commit('fetchSourcies', data.sourcies)
+  },
+  async addDiapason ({ commit }, diapason) {
+    const { data } = await apolloClient.mutate({mutation: diapasonMutation, variables: {
+      character_id: diapason.character_id,
+      sourcies_id: diapason.sourcies_id,
+      symbol: diapason.symbol,
+      begin: diapason.begin,
+      end: diapason.end,
+    }})
+    console.log(data)
+    if (data.insert_audio.affected_rows) {
+      commit('addDiapason', data.insert_audio.returning[0])
+    }
+  },
+  async addSource ({ commit }, source) {
+    const { data } = await apolloClient.mutate({mutation: sourceMutation, variables: {
+      filename: source.name,
+      link: source.link
+    }})
+    console.log(data)
+    if (data.insert_sourcies.affected_rows) {
+      commit('addSource', data.insert_sourcies.returning[0])
     }
   },
 
