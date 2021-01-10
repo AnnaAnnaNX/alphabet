@@ -66,7 +66,8 @@
       <v-btn
         color="blue"
         text
-      >Add new character</v-btn>
+        @click="save()"
+      >Add new diapason</v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -79,6 +80,7 @@ export default {
   name: "FormAddDiapason",
   props: {
     sourcies: Array,
+    character_id: Number,
   },
   data() {
     return {
@@ -102,7 +104,7 @@ export default {
     this.stop();
   },
   methods: {
-    ...mapActions(["addCharacter"]),
+    ...mapActions(["addDiapason"]),
     close() {
       this.$emit('close-modal');
     },
@@ -142,6 +144,23 @@ export default {
         this.audioElement.pause();
         this.audioElement.currentTime = 0;
         this.isPlay = false;
+      }
+    },
+    save() {
+      if (this.symbol
+        && this.source
+        && this.source.id
+        && this.diapason[1]) {
+        this.addDiapason({ 
+          sourcies_id: this.source.id,
+          character_id: this.character_id,
+          symbol: this.symbol,
+          begin: this.diapason[0],
+          end: this.diapason[1]
+        })
+        .then(() => {
+          this.$emit('close-modal');
+        });
       }
     },
   },

@@ -80,6 +80,24 @@ const sourciesQuery = gql`
   }
 `;
 
+const diapasonMutation = gql`
+  mutation insert_audio ($character_id: Int!, $sourcies_id: Int!, $symbol: String!, $begin: numeric!, $end: numeric!) {
+    insert_audio(objects: [{character_id: $character_id, sourcies_id: $sourcies_id, symbol: $symbol, begin: $begin, end: $end }]) {
+      affected_rows
+      returning {
+      id
+      character_id
+      sourcies_id
+      symbol
+      begin
+      end
+      __typename
+      }
+      __typename
+    }
+  }
+`;
+
 
 
 
@@ -207,6 +225,19 @@ const actions = {
   async fetchSourcies ({ commit }) {
     const { data } = await apolloClient.query({query: sourciesQuery})
     commit('fetchSourcies', data.sourcies)
+  },
+  async addDiapason ({ commit }, diapason) {
+    const { data } = await apolloClient.mutate({mutation: diapasonMutation, variables: {
+      character_id: diapason.character_id,
+      sourcies_id: diapason.sourcies_id,
+      symbol: diapason.symbol,
+      begin: diapason.begin,
+      end: diapason.end,
+    }})
+    console.log(data)
+    if (data.insert_character.affected_rows) {
+      commit('addDiapason', data.insert_audio.returning[0])
+    }
   },
 
 

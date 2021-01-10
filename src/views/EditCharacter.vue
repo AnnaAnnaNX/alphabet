@@ -47,6 +47,7 @@
           v-if="dialog"
           v-on:close-modal="closeModal"
           :sourcies="sourcies"
+          :character_id="character && character.id"
         ></form-add-diapason>
       </v-card>
     </v-dialog>
