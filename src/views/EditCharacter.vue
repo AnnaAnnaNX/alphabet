@@ -25,17 +25,43 @@
       v-if="character"
       :audios="character.audios"
     ></diapasons-table>
+    <v-dialog
+      v-model="dialog"
+      hide-overlay
+      transition="dialog-bottom-transition"
+    >
+      <template v-slot:activator="{ on, attrs }">
+        <v-btn
+          color="primary"
+          fab
+          medium
+          dark
+          v-bind="attrs"
+          v-on="on"
+        >
+          <v-icon>mdi-plus</v-icon>
+        </v-btn>
+      </template>
+      <v-card>
+        <form-add-diapason
+          v-if="dialog"
+          v-on:close-modal="closeModal"
+        ></form-add-diapason>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
 <script>
 import { mapActions } from "vuex";
+import FormAddDiapason from '../components/forms/FormAddDiapason.vue';
 import DiapasonsTable from "../components/tables/DiapasonsTable.vue";
 
 export default {
   name: "EditCharacter",
   components: {
-    DiapasonsTable
+    DiapasonsTable,
+    FormAddDiapason
   },
   computed: {
     id() {
@@ -107,10 +133,14 @@ export default {
   },
   data() {
     return {
+      dialog: false,
     };
   },
   methods: {
     ...mapActions(["fetchCharacterWithAudio"]),
+    closeModal() {
+      this.dialog = false;
+    },
   },
   mounted() {
     this.fetchCharacterWithAudio(this.id);

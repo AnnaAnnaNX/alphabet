@@ -68,6 +68,7 @@ const sourciesQuery = gql`
     sourcies {
       id
       filename
+      link
       audios {
         character {
           id

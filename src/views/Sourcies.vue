@@ -6,7 +6,6 @@
     <sourcies-table
       :sourcies="sourcies"
     ></sourcies-table>
-    
   </div>
 </template>
 
