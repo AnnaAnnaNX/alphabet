@@ -100,7 +100,18 @@ const diapasonMutation = gql`
   }
 `;
 
-
+const sourceMutation = gql`
+  mutation insert_sourcies ($filename: String!, $link: String!) {
+    insert_sourcies(objects: [{filename: $filename, link: $link}]) {
+      affected_rows
+      returning {
+      id
+      filename
+      link
+      }
+    }
+  }
+`;
 
 
 
@@ -190,6 +201,9 @@ const mutations = {
         state.character.audios.unshift(diapason);
     }
   },
+  addSource (state, source) {
+    state.sourcies.unshift(source);
+  },
 
 
   fetchTodos (state, todos) {
@@ -245,6 +259,16 @@ const actions = {
     console.log(data)
     if (data.insert_audio.affected_rows) {
       commit('addDiapason', data.insert_audio.returning[0])
+    }
+  },
+  async addSource ({ commit }, source) {
+    const { data } = await apolloClient.mutate({mutation: sourceMutation, variables: {
+      filename: source.name,
+      link: source.link
+    }})
+    console.log(data)
+    if (data.insert_sourcies.affected_rows) {
+      commit('addSource', data.insert_sourcies.returning[0])
     }
   },
 
