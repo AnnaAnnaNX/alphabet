@@ -46,6 +46,7 @@
         <form-add-diapason
           v-if="dialog"
           v-on:close-modal="closeModal"
+          :sourcies="sourcies"
         ></form-add-diapason>
       </v-card>
     </v-dialog>
@@ -129,21 +130,25 @@ export default {
       }
       const arr = Object.keys(this.symbolWithAudioObj);
       return arr.sort();
+    },    
+    sourcies() {
+      return this.$store.state.sourcies;
     },
   },
   data() {
     return {
-      dialog: false,
+      dialog: true,
     };
   },
   methods: {
-    ...mapActions(["fetchCharacterWithAudio"]),
+    ...mapActions(["fetchCharacterWithAudio", "fetchSourcies"]),
     closeModal() {
       this.dialog = false;
     },
   },
   mounted() {
     this.fetchCharacterWithAudio(this.id);
+    this.fetchSourcies();
   },
 };
 </script>

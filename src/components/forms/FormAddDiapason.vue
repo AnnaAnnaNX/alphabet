@@ -5,12 +5,52 @@
     </v-card-title>
     <v-card-text>
       <!-- select sourcies -->
-      <!-- slide for begin, end -->
-      <v-text-field
-        label="Name"
-        v-model="name"
-        :rules="rules"
-      ></v-text-field>
+      <v-select
+        :items="symbols"
+        v-model="symbol"
+        label="Symbol"
+      ></v-select>
+      <v-select
+        v-if="sourcies"
+        :items="sourcies"
+        v-model="source"
+        item-text="filename"
+        item-value="id"
+        label="Source"
+        return-object
+        @input="getDuration()"
+      ></v-select>
+      <v-row v-if="duration">
+        <v-col>
+          <div>
+            <v-range-slider
+              v-model="diapason"
+              :min="0"
+              :max="duration"
+              class="align-center"
+            >
+              <template v-slot:prepend>
+                {{ 0 }}
+              </template>
+              <template v-slot:append>
+                {{ duration }}
+              </template>
+            </v-range-slider>
+            <div>
+              Diapason: {{ diapason }}
+            </div>
+          </div>
+        </v-col>
+        <v-col>
+          <v-btn
+            icon
+          >
+            <v-icon>
+              mdi-play
+            </v-icon>
+          </v-btn>
+        </v-col>
+      </v-row>
     </v-card-text>
     <v-card-actions>
       <v-spacer></v-spacer>
@@ -22,7 +62,6 @@
       <v-btn
         color="blue"
         text
-        @click="addNewCharacter"
       >Add new character</v-btn>
     </v-card-actions>
   </v-card>
@@ -30,57 +69,45 @@
 
 <script>
 import { mapActions } from "vuex";
+import { englishAlphabet, russianAlphabet } from "../../constants.js";
 
 export default {
   name: "FormAddDiapason",
   props: {
+    sourcies: Array,
   },
   data() {
     return {
-      name: null,
-      description: null,
-      avatar: null,
-      rules: [
-        value => (!value || !!value.trim()) || 'required',
-        value => ((!value || value.trim() || '').length >= 5) || 'Min 5 significant characters',
-        value => ((!value || value.trim() || '').length <= 100) || 'Max 100 characters',
-      ],
-      rulesFile: [
-         value => !!value || 'required',
-      ],
+      symbol: null,
+      source: null,
+      diapason: [0, 10],
+      audioElement: null,
+      duration: null,
     };
   },
-  mounted() {
-    const that = this;
-    const input = document.querySelector('#input-avatar');
-    input.onchange = function () {
-      const file = input.files[0],
-        reader = new FileReader();
-
-      reader.onloadend = function () {
-        that.avatar =  reader.result;
-        // console.log(reader.result);
-      };
-
-      reader.readAsDataURL(file);
-    };
+  computed: {
+    symbols() {
+      return [
+        ...englishAlphabet,
+        ...russianAlphabet
+      ];
+    },
   },
   methods: {
     ...mapActions(["addCharacter"]),
-    addNewCharacter() {
-      if (this.name && this.description) {
-        this.addCharacter({ 
-          name: this.name,
-          description: this.description,
-          avatar: this.avatar,
-        })
-        .then(() => {
-          this.$emit('close-modal');
-        });
-      }
-    },
     close() {
       this.$emit('close-modal');
+    },
+    getDuration() {
+      console.log('getDuration');
+      this.duration = null;
+      if (!this.source || !this.source.link) {
+        return;
+      }
+      this.audioElement = new Audio(this.source.link);
+      this.audioElement.onloadedmetadata = () => {
+        this.duration = parseInt(this.audioElement.duration);
+      };
     },
   },
 };
