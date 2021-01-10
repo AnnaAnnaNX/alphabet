@@ -83,6 +83,9 @@ export default {
       currentPlayId: null,
     };
   },
+  beforeDestroy() {
+    this.stop();
+  },
   methods: {
     play(id, url) {
       const that = this;
