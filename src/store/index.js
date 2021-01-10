@@ -40,9 +40,11 @@ const characterWithAudioQuery = gql`
       audios {
         id
         symbol
-        fileName
         begin
         end
+        sourcy {
+          link
+        }
       }
     }
   }

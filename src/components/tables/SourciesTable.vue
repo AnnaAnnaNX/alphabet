@@ -36,9 +36,16 @@
         </template>
     </v-data-table>
     <v-btn
+      color="primary"
+      fab
+      medium
+      dark
       @click="stop"
+      :disabled="!currentPlayId"
     >
-      stop
+      <v-icon>
+        mdi-pause
+      </v-icon>
     </v-btn>
   </div>
 </template>
@@ -52,6 +59,8 @@ export default {
   data() {
     return {
       search: '',
+      audioElement: null,
+      currentPlayId: null,
       headers: [
         {
           text: 'Id',
@@ -79,8 +88,6 @@ export default {
           value: 'actions',
         }
       ],
-      audioElement: null,
-      currentPlayId: null,
     };
   },
   beforeDestroy() {

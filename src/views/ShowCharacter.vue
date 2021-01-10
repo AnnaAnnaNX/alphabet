@@ -5,9 +5,15 @@
       class="title"
       :to="`/character/${id}`"
     >
+      <!-- <v-img
+        v-if="character.avatar"
+        class="mt-10"
+        :src="character.avatar" alt="avatar"
+        style="min-width: 150px; max-width: 30vw; max-height: 30vh;"
+      ></v-img> -->
       <v-avatar
         v-if="character.avatar"
-        :size="50"
+        :size="150"
       >
         <img :src="character.avatar" alt="avatar" />
       </v-avatar>
@@ -17,29 +23,43 @@
     </router-link>
     <div class="wrap-symbols">
       <v-btn
-        color="primary"
+        :color="playSymbol === symbol ? 'orange' : 'primary'"
         fab
         medium
         dark
         v-for="symbol in symbols"
         :key="symbol"
         class="display-1 mx-5 my-5"
+        @click="playSymbol === symbol ? stop() : play(symbol)"
       >
         {{ symbol.toUpperCase() }}
       </v-btn>
     </div>
     <v-btn
-        color="primary"
-        fab
-        medium
-        dark
-        class="display-1 mx-5 my-5"
-        :to="`/character/${id}/edit`"
-      >
-        <v-icon>
-          mdi-pencil
-        </v-icon>
-      </v-btn>
+      color="primary"
+      fab
+      medium
+      dark
+      class="display-1 mx-5 my-5"
+      :to="`/character/${id}/edit`"
+    >
+      <v-icon>
+        mdi-pencil
+      </v-icon>
+    </v-btn>
+    <v-btn
+      color="primary"
+      fab
+      medium
+      dark
+      class="display-1 mx-5 my-5"
+      @click="stop()"
+      :disabled="!playSymbol"
+    >
+      <v-icon>
+        mdi-stop
+      </v-icon>
+    </v-btn>
   </div>
 </template>
 
@@ -54,7 +74,9 @@ export default {
   data() {
     return {
       russianAlphabet,
-      englishAlphabet
+      englishAlphabet,
+      audioElement: null,
+      playSymbol: null,
     };
   },
   computed: {
@@ -94,8 +116,41 @@ export default {
       return arr.sort();
     },
   },
+  beforeDestroy() {
+    this.stop();
+  },
   methods: {
     ...mapActions(["fetchCharacterWithAudio"]),
+    play(symbol) {
+      const audio = this.audioObj[symbol];
+      console.log(audio);
+      if (!audio || !audio.sourcy || !audio.sourcy.link) {
+        return;
+      }
+      const link = audio.sourcy.link;
+      if (!this.audioElement) {
+        this.audioElement = new Audio(`${link}#t=${audio.begin},${audio.end}`);
+        this.audioElement.onloadedmetadata = () => {
+          this.audioElement.play();
+          this.playSymbol = symbol;
+        };
+      } else {
+        this.audioElement.pause();
+        this.audioElement.currentTime = 0;
+        this.audioElement = new Audio(`${link}#t=${audio.begin},${audio.end}`);
+        this.audioElement.onloadedmetadata = () => {
+          this.audioElement.play();
+          this.playSymbol = symbol;
+        };
+      }
+    },
+    stop() {
+      if (this.audioElement) {
+        this.audioElement.pause();
+        this.audioElement.currentTime = 0;
+        this.playSymbol = null;
+      }
+    },
   },
   mounted() {
     this.fetchCharacterWithAudio(this.id);
@@ -107,7 +162,7 @@ export default {
 .title {
   display: flex;
   justify-content: space-evenly;
-  height: 100px;
+  height: 200px;
   align-items: center;
 }
 .wrap-symbols {
