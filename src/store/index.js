@@ -182,6 +182,12 @@ const mutations = {
   fetchSourcies (state, sourcies) {
     state.sourcies = sourcies;
   },
+  addDiapason (state, diapason) {
+    if (state.character
+      && state.character.audios) {
+        state.character.audios.unshift(diapason);
+    }
+  },
 
 
   fetchTodos (state, todos) {
@@ -235,7 +241,7 @@ const actions = {
       end: diapason.end,
     }})
     console.log(data)
-    if (data.insert_character.affected_rows) {
+    if (data.insert_audio.affected_rows) {
       commit('addDiapason', data.insert_audio.returning[0])
     }
   },
