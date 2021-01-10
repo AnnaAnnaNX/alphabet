@@ -11,8 +11,7 @@
         label="Symbol"
       ></v-select>
       <v-select
-        v-if="sourcies"
-        :items="sourcies"
+        :items="sourcies || []"
         v-model="source"
         item-text="filename"
         item-value="id"
@@ -20,13 +19,16 @@
         return-object
         @input="getDuration()"
       ></v-select>
-      <v-row v-if="duration">
+      <div>
+        Set diapason [need choose a source]
+      </div>
+      <v-row>
         <v-col>
           <div>
             <v-range-slider
               v-model="diapason"
               :min="0"
-              :max="duration"
+              :max="duration || 0"
               class="align-center"
             >
               <template v-slot:prepend>
